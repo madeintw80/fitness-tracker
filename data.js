@@ -24,9 +24,8 @@ const FitnessData = {
       },
       // 任務清單：true = 已完成
       tasks: {
-        gym: false,       // 07:00 重訓 50 分鐘
-        fasting: false,   // 08:30-13:45 禁食看盤
-        cardio: false,    // 16:00-18:00 有氧
+        gym: false,       // 重訓 50 分鐘
+        cardio: false,    // 有氧 HR≥130
         calories: false,  // 熱量 ≤ 2000 大卡
         protein: false,   // 蛋白質 ≥ 150g
         clean: false,     // 無含糖飲料/油炸/宵夜
@@ -126,7 +125,7 @@ const FitnessData = {
     if (dates.length === 0) return '';
 
     const waterLabels = { wakeup: '起床', gym: '重訓', trading: '看盤', run: '跑步', dinner: '晚餐前', other: '其餘' };
-    const taskLabels = { gym: '重訓', fasting: '禁食', cardio: '有氧', calories: '熱量達標', protein: '蛋白質達標', clean: '飲食乾淨', sleep: '早睡' };
+    const taskLabels = { gym: '重訓', cardio: '有氧', calories: '熱量達標', protein: '蛋白質達標', clean: '飲食乾淨', sleep: '早睡' };
 
     // 表頭
     const headers = [
