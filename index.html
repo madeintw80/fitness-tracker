@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f13">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Fitness Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Fitness</h1>
+  <div class="date-nav">
+    <button id="prevDay">&lt;</button>
+    <div class="date-display" id="dateDisplay">
+      <div id="dateText">04/13</div>
+      <div class="weekday" id="weekdayText">Sun</div>
+    </div>
+    <button id="nextDay">&gt;</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Tab: Today -->
+<div class="tab-content active" id="tabToday">
+
+  <!-- Completion Ring -->
+  <div class="card">
+    <div class="completion-ring-wrap">
+      <div class="ring-container">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--border)" stroke-width="8"/>
+          <circle id="ringCircle" cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8"
+            stroke-dasharray="263.9" stroke-dashoffset="263.9" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-text">
+          <span class="pct" id="ringPct">0%</span>
+          <span class="sub">completed</span>
+        </div>
+      </div>
+      <div class="ring-legends">
+        <div class="ring-legend-item">
+          <span class="ring-legend-dot" style="background:var(--water-blue)"></span>
+          <span id="legendWater">Water: 0/3500ml</span>
+        </div>
+        <div class="ring-legend-item">
+          <span class="ring-legend-dot" style="background:var(--green)"></span>
+          <span id="legendTasks">Tasks: 0/7</span>
+        </div>
+        <div class="ring-legend-item">
+          <span class="ring-legend-dot" style="background:var(--orange)"></span>
+          <span id="legendMetrics">Data: 0/5</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Water Tracker -->
+  <div class="card">
+    <div class="card-title">Water Intake</div>
+    <div class="water-progress">
+      <div class="water-progress-bar" id="waterBar" style="width:0%"></div>
+      <div class="water-progress-text" id="waterText">0 / 3500 ml</div>
+    </div>
+    <div class="water-grid" id="waterGrid">
+      <div class="water-btn" data-water="wakeup">
+        <span class="emoji">&#9728;</span>
+        <span class="label">&#x8D77;&#x5E8A;</span>
+        <span class="amount">500ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+      <div class="water-btn" data-water="gym">
+        <span class="emoji">&#x1F4AA;</span>
+        <span class="label">&#x91CD;&#x8A13;</span>
+        <span class="amount">500ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+      <div class="water-btn" data-water="trading">
+        <span class="emoji">&#x1F4C8;</span>
+        <span class="label">&#x770B;&#x76E4;</span>
+        <span class="amount">1000ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+      <div class="water-btn" data-water="run">
+        <span class="emoji">&#x1F3C3;</span>
+        <span class="label">&#x8DD1;&#x6B65;</span>
+        <span class="amount">500ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+      <div class="water-btn" data-water="dinner">
+        <span class="emoji">&#x1F35C;</span>
+        <span class="label">&#x665A;&#x9910;&#x524D;</span>
+        <span class="amount">500ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+      <div class="water-btn" data-water="other">
+        <span class="emoji">&#x1F4A7;</span>
+        <span class="label">&#x5176;&#x9918;</span>
+        <span class="amount">500ml</span>
+        <span class="check-mark">&#x2714;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks -->
+  <div class="card">
+    <div class="card-title">Daily Tasks</div>
+    <div id="taskList">
+      <div class="task-item" data-task="gym">
+        <div class="task-check"></div>
+        <div class="task-label"><span class="task-time">07:00</span> &#x91CD;&#x8A13; 50 &#x5206;&#x9418;</div>
+      </div>
+      <div class="task-item" data-task="fasting">
+        <div class="task-check"></div>
+        <div class="task-label"><span class="task-time">08:30-13:45</span> &#x7981;&#x98DF;&#x770B;&#x76E4;</div>
+      </div>
+      <div class="task-item" data-task="cardio">
+        <div class="task-check"></div>
+        <div class="task-label"><span class="task-time">16:00-18:00</span> &#x6709;&#x6C27; HR&#x2265;130</div>
+      </div>
+      <div class="task-item" data-task="calories">
+        <div class="task-check"></div>
+        <div class="task-label">&#x71B1;&#x91CF; &#x2264; 2000 &#x5927;&#x5361;</div>
+      </div>
+      <div class="task-item" data-task="protein">
+        <div class="task-check"></div>
+        <div class="task-label">&#x86CB;&#x767D;&#x8CEA; &#x2265; 150g</div>
+      </div>
+      <div class="task-item" data-task="clean">
+        <div class="task-check"></div>
+        <div class="task-label">&#x7121;&#x542B;&#x7CD6;&#x98F2;&#x6599;/&#x6CB9;&#x70B8;/&#x5BB5;&#x591C;</div>
+      </div>
+      <div class="task-item" data-task="sleep">
+        <div class="task-check"></div>
+        <div class="task-label">12 &#x9EDE;&#x524D;&#x7761;&#x89BA;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="card">
+    <div class="card-title">Data Input</div>
+    <div class="metric-row">
+      <span class="metric-icon">&#x2696;</span>
+      <span class="metric-label">&#x9AD4;&#x91CD;</span>
+      <input class="metric-input" type="number" step="0.1" placeholder="--" data-metric="weight">
+      <span class="metric-unit">kg</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-icon">&#x1F525;</span>
+      <span class="metric-label">&#x71B1;&#x91CF;</span>
+      <input class="metric-input" type="number" step="10" placeholder="--" data-metric="calories">
+      <span class="metric-unit">kcal</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-icon">&#x1F969;</span>
+      <span class="metric-label">&#x86CB;&#x767D;&#x8CEA;</span>
+      <input class="metric-input" type="number" step="1" placeholder="--" data-metric="protein">
+      <span class="metric-unit">g</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-icon">&#x1F463;</span>
+      <span class="metric-label">&#x6B65;&#x6578;</span>
+      <input class="metric-input" type="number" step="100" placeholder="--" data-metric="steps">
+      <span class="metric-unit">&#x6B65;</span>
+    </div>
+    <div class="metric-row">
+      <span class="metric-icon">&#x1F634;</span>
+      <span class="metric-label">&#x7761;&#x7720;</span>
+      <input class="metric-input" type="number" step="0.5" placeholder="--" data-metric="sleepHours">
+      <span class="metric-unit">hr</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: Stats -->
+<div class="tab-content" id="tabStats">
+  <div class="period-selector">
+    <button class="period-btn active" data-period="7">7 Days</button>
+    <button class="period-btn" data-period="14">14 Days</button>
+    <button class="period-btn" data-period="30">30 Days</button>
+  </div>
+
+  <div class="stat-summary" id="statSummary">
+    <div class="stat-box green">
+      <div class="value" id="statRate">--%</div>
+      <div class="label">Avg Completion</div>
+    </div>
+    <div class="stat-box blue">
+      <div class="value" id="statWater">--</div>
+      <div class="label">Water Days</div>
+    </div>
+    <div class="stat-box orange">
+      <div class="value" id="statWeight">--</div>
+      <div class="label">Weight (kg)</div>
+    </div>
+    <div class="stat-box purple">
+      <div class="value" id="statSteps">--</div>
+      <div class="label">Avg Steps</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Task Completion</div>
+    <div class="chart-container"><canvas id="chartCompletion"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Weight Trend</div>
+    <div class="chart-container"><canvas id="chartWeight"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Water Intake</div>
+    <div class="chart-container"><canvas id="chartWater"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Calories &amp; Protein</div>
+    <div class="chart-container"><canvas id="chartNutrition"></canvas></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Steps</div>
+    <div class="chart-container"><canvas id="chartSteps"></canvas></div>
+  </div>
+</div>
+
+<!-- Tab: Settings -->
+<div class="tab-content" id="tabSettings">
+  <div class="card">
+    <div class="card-title">Data Management</div>
+    <button class="settings-btn" id="btnExportTSV">
+      <span class="icon">&#x1F4CB;</span>
+      <span>Export TSV (Google Sheets)</span>
+    </button>
+    <button class="settings-btn" id="btnExportJSON">
+      <span class="icon">&#x1F4E5;</span>
+      <span>Export JSON</span>
+    </button>
+    <button class="settings-btn" id="btnImportJSON">
+      <span class="icon">&#x1F4E4;</span>
+      <span>Import JSON</span>
+    </button>
+    <button class="settings-btn danger" id="btnClearAll">
+      <span class="icon">&#x1F5D1;</span>
+      <span>Clear All Data</span>
+    </button>
+    <input type="file" id="fileImport" accept=".json" style="display:none">
+  </div>
+  <div class="settings-info" id="dataInfo">No data yet</div>
+</div>
+
+<!-- Bottom Tab Bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="tabToday">
+    <span class="icon">&#x2705;</span>
+    <span>Today</span>
+  </button>
+  <button class="tab-btn" data-tab="tabStats">
+    <span class="icon">&#x1F4CA;</span>
+    <span>Stats</span>
+  </button>
+  <button class="tab-btn" data-tab="tabSettings">
+    <span class="icon">&#x2699;</span>
+    <span>Settings</span>
+  </button>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">Confirm</h3>
+    <p id="modalMsg">Are you sure?</p>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+      <button class="modal-btn danger" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+<script>
+  // 註冊 Service Worker（PWA 離線支援）
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+</body>
+</html>
