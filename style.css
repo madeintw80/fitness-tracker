@@ -539,7 +539,7 @@ html, body {
 /* === TOAST / FEEDBACK === */
 .toast {
   position: fixed;
-  top: 20px;
+  top: max(70px, calc(20px + var(--safe-top)));
   left: 50%;
   transform: translateX(-50%) translateY(-100px);
   background: var(--green);
@@ -562,6 +562,7 @@ html, body {
   display: none;
   position: fixed;
   inset: 0;
+  padding-top: max(60px, var(--safe-top));
   background: rgba(0,0,0,0.6);
   z-index: 200;
   align-items: center;
