@@ -1,5 +1,6 @@
-// sw.js — Service Worker（離線可用）
-const CACHE_NAME = 'fitness-v3';
+// sw.js — Service Worker
+// 策略：Network First（有網路就抓最新，離線才用快取）
+const CACHE_NAME = 'fitness-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -10,7 +11,7 @@ const ASSETS = [
   './manifest.json',
 ];
 
-// 安裝時快取所有檔案
+// 安裝時快取基本檔案（給離線用）
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
@@ -18,7 +19,7 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-// 啟動時清除舊快取
+// 啟動時清除舊版快取
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -28,17 +29,19 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-// 請求時先找快取，沒有才去網路抓
+// Network First：有網路就抓最新版，失敗才用快取
 self.addEventListener('fetch', (e) => {
-  // Chart.js CDN 不快取（讓它用網路）
-  if (e.request.url.includes('cdn.jsdelivr.net')) {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
-    );
-    return;
-  }
-
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    fetch(e.request)
+      .then(response => {
+        // 抓到新的，同時更新快取
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+        return response;
+      })
+      .catch(() => {
+        // 離線，用快取
+        return caches.match(e.request);
+      })
   );
 });
