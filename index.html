@@ -226,8 +226,9 @@
     <input type="file" id="fileImport" accept=".json" style="display:none">
   </div>
   <div class="settings-info" id="dataInfo">No data yet</div>
-  <div class="settings-info" id="versionInfo">v1.3.0</div>
-  <button class="settings-btn" id="btnCheckUpdate" style="margin-top:8px">
+  <div class="settings-info" id="versionInfo">v1.3.1</div>
+  <button class="settings-btn" id="btnCheckUpdate" style="margin-top:8px"
+    onclick="(function(){try{caches.keys().then(function(n){n.forEach(function(k){caches.delete(k)})});navigator.serviceWorker.getRegistrations().then(function(r){r.forEach(function(sw){sw.unregister()})});}catch(e){}setTimeout(function(){window.location.href=window.location.pathname+'?update='+Date.now()},500)})()">
     <span class="icon">&#x1F504;</span>
     <span>Check for Updates</span>
   </button>

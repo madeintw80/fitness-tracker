@@ -415,7 +415,7 @@
       if ('caches' in window) {
         caches.keys().then(names => {
           const sw = names.length > 0 ? names[names.length - 1] : 'none';
-          vi.textContent = `v1.3.0 | cache: ${sw}`;
+          vi.textContent = `v1.3.1 | cache: ${sw}`;
         });
       }
     }
