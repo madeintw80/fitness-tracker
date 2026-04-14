@@ -541,7 +541,7 @@ html, body {
   position: fixed;
   top: max(70px, calc(20px + var(--safe-top)));
   left: 50%;
-  transform: translateX(-50%) translateY(-100px);
+  transform: translateX(-50%) translateY(-200px);
   background: var(--green);
   color: #000;
   padding: 10px 20px;
