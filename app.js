@@ -415,11 +415,30 @@
       if ('caches' in window) {
         caches.keys().then(names => {
           const sw = names.length > 0 ? names[names.length - 1] : 'none';
-          vi.textContent = `v1.2.0 | cache: ${sw}`;
+          vi.textContent = `v1.3.0 | cache: ${sw}`;
         });
       }
     }
   }
+
+  // ====== 檢查更新 ======
+  document.getElementById('btnCheckUpdate').addEventListener('click', () => {
+    showToast('Checking for updates...');
+    // 1. 重新註冊 SW 觸發更新
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.update());
+      });
+      // 2. 清快取
+      if ('caches' in window) {
+        caches.keys().then(names => names.forEach(name => caches.delete(name)));
+      }
+    }
+    // 3. 延遲後 hard reload
+    setTimeout(() => {
+      location.reload(true);
+    }, 1000);
+  });
 
   // ====== 工具函式 ======
   function showToast(msg) {
@@ -488,6 +507,52 @@
     a.href = url; a.download = filename; a.click();
     URL.revokeObjectURL(url);
   }
+
+  // ====== Pull to Refresh ======
+  (function initPullToRefresh() {
+    const indicator = document.getElementById('pullIndicator');
+    let startY = 0;
+    let pulling = false;
+    const threshold = 80;
+
+    document.addEventListener('touchstart', (e) => {
+      // 只在頁面頂部時啟動
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+        indicator.classList.add('pulling');
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!pulling) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy > 0 && dy < 150) {
+        const progress = Math.min(dy, threshold);
+        indicator.style.transform = `translateY(${progress}px)`;
+        document.body.style.transform = `translateY(${progress}px)`;
+        indicator.classList.toggle('triggered', dy >= threshold);
+        indicator.textContent = dy >= threshold ? '\uD83D\uDD04 Release to refresh' : '\u2B07 Pull down to refresh';
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+      if (!pulling) return;
+      pulling = false;
+      indicator.classList.remove('pulling', 'triggered');
+      const wasTriggered = indicator.textContent.includes('Release');
+      indicator.style.transform = '';
+      document.body.style.transform = '';
+      if (wasTriggered) {
+        showToast('Refreshing...');
+        // 清快取 + reload
+        if ('caches' in window) {
+          caches.keys().then(names => names.forEach(n => caches.delete(n)));
+        }
+        setTimeout(() => location.reload(true), 500);
+      }
+    });
+  })();
 
   // ====== 初始化 ======
   loadDay();

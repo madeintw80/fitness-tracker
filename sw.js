@@ -1,6 +1,6 @@
 // sw.js — Service Worker
 // 策略：Network First（有網路就抓最新，離線才用快取）
-const CACHE_NAME = 'fitness-v5';
+const CACHE_NAME = 'fitness-v6';
 const ASSETS = [
   './',
   './index.html',

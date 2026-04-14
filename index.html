@@ -8,9 +8,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fitness Tracker</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
+
+<!-- Pull to Refresh -->
+<div id="pullIndicator" class="pull-indicator">&#x1F504; Release to refresh</div>
 
 <!-- Header -->
 <div class="header">
@@ -223,7 +226,11 @@
     <input type="file" id="fileImport" accept=".json" style="display:none">
   </div>
   <div class="settings-info" id="dataInfo">No data yet</div>
-  <div class="settings-info" id="versionInfo">v1.2.0</div>
+  <div class="settings-info" id="versionInfo">v1.3.0</div>
+  <button class="settings-btn" id="btnCheckUpdate" style="margin-top:8px">
+    <span class="icon">&#x1F504;</span>
+    <span>Check for Updates</span>
+  </button>
 </div>
 
 <!-- Bottom Tab Bar -->
