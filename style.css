@@ -723,23 +723,17 @@ html, body {
 
 /* === PULL TO REFRESH === */
 .pull-indicator {
-  position: fixed;
-  top: -50px;
-  left: 0;
-  right: 0;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
+  text-align: center;
+  padding: 10px;
   font-size: 14px;
   color: var(--text-dim);
   background: var(--bg-card);
-  z-index: 150;
-  transition: transform 0.2s ease;
+  border-bottom: 1px solid var(--border);
 }
 
-.pull-indicator.pulling {
-  transition: none;
+.pull-indicator.show {
+  display: block;
 }
 
 .pull-indicator.triggered {

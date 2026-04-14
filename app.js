@@ -513,43 +513,42 @@
     const indicator = document.getElementById('pullIndicator');
     let startY = 0;
     let pulling = false;
-    const threshold = 80;
+    const threshold = 60;
 
     document.addEventListener('touchstart', (e) => {
-      // 只在頁面頂部時啟動
       if (window.scrollY === 0) {
         startY = e.touches[0].clientY;
         pulling = true;
-        indicator.classList.add('pulling');
       }
     }, { passive: true });
 
     document.addEventListener('touchmove', (e) => {
       if (!pulling) return;
       const dy = e.touches[0].clientY - startY;
-      if (dy > 0 && dy < 150) {
-        const progress = Math.min(dy, threshold);
-        indicator.style.transform = `translateY(${progress}px)`;
-        document.body.style.transform = `translateY(${progress}px)`;
-        indicator.classList.toggle('triggered', dy >= threshold);
-        indicator.textContent = dy >= threshold ? '\uD83D\uDD04 Release to refresh' : '\u2B07 Pull down to refresh';
+      if (dy > 10 && dy < 150) {
+        indicator.classList.add('show');
+        const triggered = dy >= threshold;
+        indicator.classList.toggle('triggered', triggered);
+        indicator.textContent = triggered ? '\uD83D\uDD04 Release to refresh' : '\u2B07\uFE0E Pull down...';
+      } else if (dy <= 0) {
+        indicator.classList.remove('show');
       }
     }, { passive: true });
 
     document.addEventListener('touchend', () => {
       if (!pulling) return;
+      const wasTriggered = indicator.classList.contains('triggered');
       pulling = false;
-      indicator.classList.remove('pulling', 'triggered');
-      const wasTriggered = indicator.textContent.includes('Release');
-      indicator.style.transform = '';
-      document.body.style.transform = '';
+      indicator.classList.remove('show', 'triggered');
       if (wasTriggered) {
-        showToast('Refreshing...');
-        // 清快取 + reload
+        indicator.classList.add('show');
+        indicator.textContent = 'Updating...';
         if ('caches' in window) {
           caches.keys().then(names => names.forEach(n => caches.delete(n)));
         }
-        setTimeout(() => location.reload(true), 500);
+        setTimeout(() => {
+          window.location.href = window.location.pathname + '?t=' + Date.now();
+        }, 500);
       }
     });
   })();

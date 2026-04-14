@@ -8,12 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fitness Tracker</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
-
-<!-- Pull to Refresh -->
-<div id="pullIndicator" class="pull-indicator">&#x1F504; Release to refresh</div>
 
 <!-- Header -->
 <div class="header">
@@ -27,6 +24,9 @@
     <button id="nextDay">&gt;</button>
   </div>
 </div>
+
+<!-- Pull to Refresh (below header) -->
+<div id="pullIndicator" class="pull-indicator"></div>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
