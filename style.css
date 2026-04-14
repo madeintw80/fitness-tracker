@@ -43,7 +43,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px 12px;
-  padding-top: calc(16px + var(--safe-top));
+  padding-top: max(54px, calc(12px + var(--safe-top)));
   position: sticky;
   top: 0;
   background: var(--bg);
