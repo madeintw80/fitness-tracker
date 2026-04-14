@@ -1,5 +1,5 @@
 // sw.js — Service Worker（離線可用）
-const CACHE_NAME = 'fitness-v2';
+const CACHE_NAME = 'fitness-v3';
 const ASSETS = [
   './',
   './index.html',
