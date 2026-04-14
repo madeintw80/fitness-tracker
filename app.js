@@ -408,6 +408,17 @@
     document.getElementById('dataInfo').textContent = dates.length === 0
       ? 'No data yet'
       : `${dates.length} days recorded (${dates[0]} ~ ${dates[dates.length - 1]})`;
+    // 顯示版本 + SW 快取狀態
+    const vi = document.getElementById('versionInfo');
+    if (vi) {
+      let info = 'v1.2.0';
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          const sw = names.length > 0 ? names[names.length - 1] : 'none';
+          vi.textContent = `v1.2.0 | cache: ${sw}`;
+        });
+      }
+    }
   }
 
   // ====== 工具函式 ======
