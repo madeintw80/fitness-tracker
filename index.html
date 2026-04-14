@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Fitness Tracker</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 
@@ -70,42 +70,7 @@
       <div class="water-progress-text" id="waterText">0 / 3500 ml</div>
     </div>
     <div class="water-grid" id="waterGrid">
-      <div class="water-btn" data-water="wakeup">
-        <span class="emoji">&#9728;</span>
-        <span class="label">&#x8D77;&#x5E8A;</span>
-        <span class="amount">500ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
-      <div class="water-btn" data-water="gym">
-        <span class="emoji">&#x1F4AA;</span>
-        <span class="label">&#x91CD;&#x8A13;</span>
-        <span class="amount">500ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
-      <div class="water-btn" data-water="trading">
-        <span class="emoji">&#x1F4C8;</span>
-        <span class="label">&#x770B;&#x76E4;</span>
-        <span class="amount">1000ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
-      <div class="water-btn" data-water="run">
-        <span class="emoji">&#x1F3C3;</span>
-        <span class="label">&#x8DD1;&#x6B65;</span>
-        <span class="amount">500ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
-      <div class="water-btn" data-water="dinner">
-        <span class="emoji">&#x1F35C;</span>
-        <span class="label">&#x665A;&#x9910;&#x524D;</span>
-        <span class="amount">500ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
-      <div class="water-btn" data-water="other">
-        <span class="emoji">&#x1F4A7;</span>
-        <span class="label">&#x5176;&#x9918;</span>
-        <span class="amount">500ml</span>
-        <span class="check-mark">&#x2714;</span>
-      </div>
+      <!-- 由 app.js 動態產生 -->
     </div>
   </div>
 
@@ -113,30 +78,7 @@
   <div class="card">
     <div class="card-title">Daily Tasks</div>
     <div id="taskList">
-      <div class="task-item" data-task="gym">
-        <div class="task-check"></div>
-        <div class="task-label">&#x91CD;&#x8A13; 50 &#x5206;&#x9418;</div>
-      </div>
-      <div class="task-item" data-task="cardio">
-        <div class="task-check"></div>
-        <div class="task-label">&#x6709;&#x6C27; HR&#x2265;130</div>
-      </div>
-      <div class="task-item" data-task="calories">
-        <div class="task-check"></div>
-        <div class="task-label">&#x71B1;&#x91CF; &#x2264; 2000 &#x5927;&#x5361;</div>
-      </div>
-      <div class="task-item" data-task="protein">
-        <div class="task-check"></div>
-        <div class="task-label">&#x86CB;&#x767D;&#x8CEA; &#x2265; 150g</div>
-      </div>
-      <div class="task-item" data-task="clean">
-        <div class="task-check"></div>
-        <div class="task-label">&#x7121;&#x542B;&#x7CD6;&#x98F2;&#x6599;/&#x6CB9;&#x70B8;/&#x5BB5;&#x591C;</div>
-      </div>
-      <div class="task-item" data-task="sleep">
-        <div class="task-check"></div>
-        <div class="task-label">12 &#x9EDE;&#x524D;&#x7761;&#x89BA;</div>
-      </div>
+      <!-- 由 app.js 動態產生 -->
     </div>
   </div>
 
@@ -231,6 +173,35 @@
 
 <!-- Tab: Settings -->
 <div class="tab-content" id="tabSettings">
+
+  <!-- Customize Water -->
+  <div class="card">
+    <div class="card-title">Customize Water</div>
+    <div id="customWaterList"></div>
+    <button class="settings-btn" id="btnAddWater">
+      <span class="icon">+</span>
+      <span>Add Water Slot</span>
+    </button>
+    <button class="settings-btn" id="btnResetWater" style="font-size:13px;color:var(--text-dim)">
+      <span class="icon">&#x21BA;</span>
+      <span>Reset to Default</span>
+    </button>
+  </div>
+
+  <!-- Customize Tasks -->
+  <div class="card">
+    <div class="card-title">Customize Tasks</div>
+    <div id="customTaskList"></div>
+    <button class="settings-btn" id="btnAddTask">
+      <span class="icon">+</span>
+      <span>Add Task</span>
+    </button>
+    <button class="settings-btn" id="btnResetTasks" style="font-size:13px;color:var(--text-dim)">
+      <span class="icon">&#x21BA;</span>
+      <span>Reset to Default</span>
+    </button>
+  </div>
+
   <div class="card">
     <div class="card-title">Data Management</div>
     <button class="settings-btn" id="btnExportTSV">
@@ -278,6 +249,18 @@
     <div class="modal-actions">
       <button class="modal-btn cancel" id="modalCancel">Cancel</button>
       <button class="modal-btn danger" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Input Modal (for adding water/task) -->
+<div class="modal-overlay" id="inputModal">
+  <div class="modal">
+    <h3 id="inputModalTitle">Add</h3>
+    <div id="inputModalFields"></div>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" id="inputModalCancel">Cancel</button>
+      <button class="modal-btn confirm" id="inputModalOk">Add</button>
     </div>
   </div>
 </div>

@@ -621,6 +621,104 @@ html, body {
   color: #fff;
 }
 
+/* === CUSTOMIZE LIST (Settings) === */
+.custom-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.custom-item:last-child {
+  border-bottom: none;
+}
+
+.custom-emoji {
+  font-size: 18px;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.custom-label {
+  font-size: 14px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-value {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.custom-edit,
+.custom-del {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.custom-edit {
+  background: var(--bg);
+  color: var(--text-dim);
+}
+
+.custom-edit:active {
+  background: var(--bg-card-hover);
+}
+
+.custom-del {
+  background: none;
+  color: var(--red);
+  font-size: 20px;
+}
+
+.custom-del:active {
+  background: rgba(239, 83, 80, 0.15);
+}
+
+/* === INPUT MODAL === */
+.input-modal-row {
+  margin-bottom: 12px;
+}
+
+.input-modal-row label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.input-modal-field {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input-modal-field:focus {
+  border-color: var(--accent);
+}
+
 /* === RESPONSIVE === */
 @media (min-width: 480px) {
   .water-grid {

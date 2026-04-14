@@ -1,77 +1,126 @@
 // data.js — localStorage 資料管理
-// 每天的資料用日期字串 "YYYY-MM-DD" 當 key
+// config（飲水格/任務定義）和每日資料分開存
 
+// ====== 預設設定 ======
+const DEFAULT_WATER = [
+  { id: 'wakeup',  emoji: '\u2600', label: '起床',   ml: 500  },
+  { id: 'gym',     emoji: '\uD83D\uDCAA', label: '重訓',   ml: 500  },
+  { id: 'trading', emoji: '\uD83D\uDCC8', label: '看盤',   ml: 1000 },
+  { id: 'run',     emoji: '\uD83C\uDFC3', label: '跑步',   ml: 500  },
+  { id: 'dinner',  emoji: '\uD83C\uDF5C', label: '晚餐前', ml: 500  },
+  { id: 'other',   emoji: '\uD83D\uDCA7', label: '其餘',   ml: 500  },
+];
+
+const DEFAULT_TASKS = [
+  { id: 'gym',      label: '重訓 50 分鐘' },
+  { id: 'cardio',   label: '有氧 HR\u2265130' },
+  { id: 'calories', label: '熱量 \u2264 2000 大卡' },
+  { id: 'protein',  label: '蛋白質 \u2265 150g' },
+  { id: 'clean',    label: '無含糖飲料/油炸/宵夜' },
+  { id: 'sleep',    label: '12 點前睡覺' },
+];
+
+// ====== Config 管理 ======
+const FitnessConfig = {
+  // 取得飲水格設定
+  getWater() {
+    const raw = localStorage.getItem('fitness_config_water');
+    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_WATER));
+  },
+
+  // 儲存飲水格設定
+  saveWater(slots) {
+    localStorage.setItem('fitness_config_water', JSON.stringify(slots));
+  },
+
+  // 取得任務設定
+  getTasks() {
+    const raw = localStorage.getItem('fitness_config_tasks');
+    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_TASKS));
+  },
+
+  // 儲存任務設定
+  saveTasks(tasks) {
+    localStorage.setItem('fitness_config_tasks', JSON.stringify(tasks));
+  },
+
+  // 產生唯一 ID（新增用）
+  newId() {
+    return 'c_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  },
+
+  // 重設為預設
+  resetWater() {
+    localStorage.removeItem('fitness_config_water');
+  },
+
+  resetTasks() {
+    localStorage.removeItem('fitness_config_tasks');
+  },
+
+  // 計算飲水目標總量
+  getWaterTarget() {
+    return this.getWater().reduce((sum, s) => sum + s.ml, 0);
+  },
+};
+
+// ====== 每日資料管理 ======
 const FitnessData = {
-  // 取得指定日期的資料，沒有就回傳預設空白
+  // 取得指定日期的資料，沒有就回傳空白
   get(dateStr) {
     const raw = localStorage.getItem(`fitness_${dateStr}`);
     if (raw) return JSON.parse(raw);
     return this.blank(dateStr);
   },
 
-  // 空白的一天資料結構
+  // 空白的一天（根據目前 config 動態產生）
   blank(dateStr) {
+    const water = {};
+    for (const s of FitnessConfig.getWater()) {
+      water[s.id] = false;
+    }
+    const tasks = {};
+    for (const t of FitnessConfig.getTasks()) {
+      tasks[t.id] = false;
+    }
     return {
       date: dateStr,
-      // 飲水：6 個時段，true = 已喝
-      water: {
-        wakeup: false,    // 起床 500ml
-        gym: false,       // 重訓 500ml
-        trading: false,   // 看盤 1000ml
-        run: false,       // 跑步 500ml
-        dinner: false,    // 晚餐前 500ml
-        other: false,     // 其餘 500ml
-      },
-      // 任務清單：true = 已完成
-      tasks: {
-        gym: false,       // 重訓 50 分鐘
-        cardio: false,    // 有氧 HR≥130
-        calories: false,  // 熱量 ≤ 2000 大卡
-        protein: false,   // 蛋白質 ≥ 150g
-        clean: false,     // 無含糖飲料/油炸/宵夜
-        sleep: false,     // 12 點前睡覺
-      },
-      // 數據輸入
+      water,
+      tasks,
       metrics: {
-        weight: null,     // 體重 kg
-        calories: null,   // 總熱量 kcal
-        protein: null,    // 蛋白質 g
-        steps: null,      // 步數
-        sleepHours: null,  // 睡眠時數
+        weight: null,
+        calories: null,
+        protein: null,
+        steps: null,
+        sleepHours: null,
       },
     };
   },
 
-  // 儲存指定日期的資料
+  // 儲存
   save(dateStr, data) {
     localStorage.setItem(`fitness_${dateStr}`, JSON.stringify(data));
   },
 
-  // 計算飲水量 (ml)
+  // 計算飲水量（根據 config 的 ml 值）
   getWaterMl(waterObj) {
-    const amounts = {
-      wakeup: 500,
-      gym: 500,
-      trading: 1000,
-      run: 500,
-      dinner: 500,
-      other: 500,
-    };
+    const slots = FitnessConfig.getWater();
     let total = 0;
-    for (const [key, done] of Object.entries(waterObj)) {
-      if (done) total += amounts[key];
+    for (const s of slots) {
+      if (waterObj[s.id]) total += s.ml;
     }
     return total;
   },
 
-  // 計算任務完成數
+  // 計算任務完成數（只算 config 中存在的任務）
   getTaskCount(tasksObj) {
-    const done = Object.values(tasksObj).filter(v => v).length;
-    const total = Object.keys(tasksObj).length;
-    return { done, total };
+    const defs = FitnessConfig.getTasks();
+    const ids = defs.map(t => t.id);
+    const done = ids.filter(id => tasksObj[id]).length;
+    return { done, total: ids.length };
   },
 
-  // 取得日期範圍內的所有資料（用於統計）
+  // 取得日期範圍內的所有資料
   getRange(startDate, endDate) {
     const result = [];
     const d = new Date(startDate);
@@ -89,27 +138,35 @@ const FitnessData = {
     const dates = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key.startsWith('fitness_')) {
+      if (key.startsWith('fitness_') && !key.startsWith('fitness_config')) {
         dates.push(key.replace('fitness_', ''));
       }
     }
     return dates.sort();
   },
 
-  // 匯出全部資料為 JSON
+  // 匯出全部資料為 JSON（含 config）
   exportJSON() {
     const dates = this.getAllDates();
-    const data = {};
+    const data = { _config: {
+      water: FitnessConfig.getWater(),
+      tasks: FitnessConfig.getTasks(),
+    }};
     for (const d of dates) {
       data[d] = this.get(d);
     }
     return JSON.stringify(data, null, 2);
   },
 
-  // 匯入 JSON 資料
+  // 匯入 JSON 資料（含 config）
   importJSON(jsonStr) {
     const data = JSON.parse(jsonStr);
     let count = 0;
+    // 匯入 config（如果有的話）
+    if (data._config) {
+      if (data._config.water) FitnessConfig.saveWater(data._config.water);
+      if (data._config.tasks) FitnessConfig.saveTasks(data._config.tasks);
+    }
     for (const [dateStr, dayData] of Object.entries(data)) {
       if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
         this.save(dateStr, dayData);
@@ -119,20 +176,19 @@ const FitnessData = {
     return count;
   },
 
-  // 匯出 TSV（給 Google Sheets 貼上）
+  // 匯出 TSV
   exportTSV() {
     const dates = this.getAllDates();
     if (dates.length === 0) return '';
 
-    const waterLabels = { wakeup: '起床', gym: '重訓', trading: '看盤', run: '跑步', dinner: '晚餐前', other: '其餘' };
-    const taskLabels = { gym: '重訓', cardio: '有氧', calories: '熱量達標', protein: '蛋白質達標', clean: '飲食乾淨', sleep: '早睡' };
+    const waterSlots = FitnessConfig.getWater();
+    const taskDefs = FitnessConfig.getTasks();
 
-    // 表頭
     const headers = [
       '日期',
-      ...Object.values(waterLabels).map(l => `飲水_${l}`),
+      ...waterSlots.map(s => `飲水_${s.label}`),
       '飲水量(ml)',
-      ...Object.values(taskLabels).map(l => `任務_${l}`),
+      ...taskDefs.map(t => `任務_${t.label}`),
       '任務完成數',
       '體重(kg)', '熱量(kcal)', '蛋白質(g)', '步數', '睡眠(hr)',
     ];
@@ -142,9 +198,9 @@ const FitnessData = {
       const d = this.get(dateStr);
       const row = [
         dateStr,
-        ...Object.keys(waterLabels).map(k => d.water[k] ? '1' : '0'),
+        ...waterSlots.map(s => d.water[s.id] ? '1' : '0'),
         this.getWaterMl(d.water),
-        ...Object.keys(taskLabels).map(k => d.tasks[k] ? '1' : '0'),
+        ...taskDefs.map(t => d.tasks[t.id] ? '1' : '0'),
         this.getTaskCount(d.tasks).done,
         d.metrics.weight ?? '',
         d.metrics.calories ?? '',
@@ -157,7 +213,7 @@ const FitnessData = {
     return rows.join('\n');
   },
 
-  // 清除所有資料
+  // 清除所有每日資料（不清 config）
   clearAll() {
     const dates = this.getAllDates();
     for (const d of dates) {
