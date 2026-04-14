@@ -720,11 +720,11 @@ html, body {
 .pull-indicator {
   display: none;
   text-align: center;
-  padding: 10px;
+  padding: 8px;
   font-size: 14px;
-  color: var(--text-dim);
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  color: #fff;
+  background: var(--green);
 }
 
 .pull-indicator.show {
@@ -732,7 +732,7 @@ html, body {
 }
 
 .pull-indicator.triggered {
-  color: var(--accent);
+  color: #fff;
 }
 
 /* === RESPONSIVE === */
